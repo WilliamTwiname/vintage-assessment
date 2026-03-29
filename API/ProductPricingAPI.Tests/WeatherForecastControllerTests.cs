@@ -7,19 +7,19 @@ namespace ProductAPI.Tests;
 [TestFixture]
 public class WeatherForecastControllerTests
 {
-    private WeatherForecastController _controller = null!;
+    private ProductPricingController _controller = null!;
 
     [SetUp]
     public void SetUp()
     {
-        var logger = new LoggerFactory().CreateLogger<WeatherForecastController>();
-        _controller = new WeatherForecastController(logger);
+        var logger = new LoggerFactory().CreateLogger<ProductPricingController>();
+        _controller = new ProductPricingController(logger);
     }
 
     [Test]
     public void Get_ReturnsWeatherForecasts()
     {
-        var result = _controller.Get();
+        var result = _controller.GetProducts();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Not.Empty);
@@ -28,7 +28,7 @@ public class WeatherForecastControllerTests
     [Test]
     public void Get_ReturnsFiveForecasts()
     {
-        var result = _controller.Get().ToList();
+        var result = _controller.GetProducts().ToList();
 
         Assert.That(result, Has.Count.EqualTo(5));
     }
@@ -36,7 +36,7 @@ public class WeatherForecastControllerTests
     [Test]
     public void Get_ForecastDatesAreFuture()
     {
-        var result = _controller.Get().ToList();
+        var result = _controller.GetProducts().ToList();
         var today = DateOnly.FromDateTime(DateTime.Now);
 
         Assert.That(result, Has.All.Matches<WeatherForecast>(f => f.Date > today));
@@ -45,7 +45,7 @@ public class WeatherForecastControllerTests
     [Test]
     public void Get_TemperatureFConversionIsCorrect()
     {
-        var result = _controller.Get().ToList();
+        var result = _controller.GetProducts().ToList();
 
         Assert.Multiple(() =>
         {
@@ -60,7 +60,7 @@ public class WeatherForecastControllerTests
     [Test]
     public void Get_SummaryIsNotNull()
     {
-        var result = _controller.Get().ToList();
+        var result = _controller.GetProducts().ToList();
 
         Assert.That(result, Has.All.Matches<WeatherForecast>(f => f.Summary != null));
     }

@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="../ProductAPI.Tests/ProductPricingAPI.Tests.csproj" />
+  <Project Path="../ProductPricingAPI.Tests/ProductPricingAPI.Tests.csproj" />
   <Project Path="ProductPricingAPI.csproj" />
 </Solution>
