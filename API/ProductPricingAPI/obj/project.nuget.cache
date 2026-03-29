@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "2ArRugG+0wQ=",
+  "success": true,
+  "projectFilePath": "D:\\_code\\vintage-assessment\\vintage-assessment\\API\\ProductPricingAPI\\ProductPricingAPI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\wtwin\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.14\\microsoft.aspnetcore.openapi.9.0.14.nupkg.sha512",
+    "C:\\Users\\wtwin\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\wtwin\\.nuget\\packages\\scalar.aspnetcore\\2.4.1\\scalar.aspnetcore.2.4.1.nupkg.sha512"
+  ],
+  "logs": []
+}
