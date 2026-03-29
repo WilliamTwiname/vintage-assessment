@@ -1,6 +1,6 @@
-﻿namespace ProductPricingAPI.DTOs
+namespace ProductPricingAPI.Models
 {
-    public class ProductHistoryRecordDto
+    public class ProductPriceHistoryRecord
     {
         public decimal Price { get; set; }
         public DateTime Date { get; set; }

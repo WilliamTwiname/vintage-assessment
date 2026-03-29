@@ -1,67 +1,71 @@
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using NUnit.Framework;
-using ProductAPI.Controllers;
+using ProductPricingAPI.Controllers;
+using ProductPricingAPI.DTOs;
+using ProductPricingAPI.Repositories;
 
-namespace ProductAPI.Tests;
+namespace ProductPricingAPI.Tests;
 
 [TestFixture]
-public class WeatherForecastControllerTests
+public class ProductPricingControllerTests
 {
+    private IProductRepository _productRepository = null!;
     private ProductPricingController _controller = null!;
 
     [SetUp]
     public void SetUp()
     {
-        var logger = new LoggerFactory().CreateLogger<ProductPricingController>();
-        _controller = new ProductPricingController(logger);
+        _productRepository = Substitute.For<IProductRepository>();
+        _controller = new ProductPricingController(_productRepository);
     }
 
     [Test]
-    public void Get_ReturnsWeatherForecasts()
+    public void GetProducts_ReturnsOk()
     {
+        _productRepository.GetProducts().Returns([]);
+
         var result = _controller.GetProducts();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Not.Empty);
+        Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
     }
 
     [Test]
-    public void Get_ReturnsFiveForecasts()
+    public void GetProducts_ReturnsProducts()
     {
-        var result = _controller.GetProducts().ToList();
-
-        Assert.That(result, Has.Count.EqualTo(5));
-    }
-
-    [Test]
-    public void Get_ForecastDatesAreFuture()
-    {
-        var result = _controller.GetProducts().ToList();
-        var today = DateOnly.FromDateTime(DateTime.Now);
-
-        Assert.That(result, Has.All.Matches<WeatherForecast>(f => f.Date > today));
-    }
-
-    [Test]
-    public void Get_TemperatureFConversionIsCorrect()
-    {
-        var result = _controller.GetProducts().ToList();
-
-        Assert.Multiple(() =>
+        var products = new List<ProductDto>
         {
-            foreach (var forecast in result)
-            {
-                var expectedF = 32 + (int)(forecast.TemperatureC / 0.5556);
-                Assert.That(forecast.TemperatureF, Is.EqualTo(expectedF));
-            }
-        });
+            new() { Id = 1, Name = "Product A", Price = 100.0m, LastUpdated = DateTime.Now },
+            new() { Id = 2, Name = "Product B", Price = 200.0m, LastUpdated = DateTime.Now }
+        };
+
+        _productRepository.GetProducts().Returns(products);
+
+        var result = (OkObjectResult)_controller.GetProducts().Result!;
+
+        Assert.That(result.Value, Is.EqualTo(products));
     }
 
     [Test]
-    public void Get_SummaryIsNotNull()
+    public void GetProductHistoryById_ReturnsOk_WhenProductExists()
     {
-        var result = _controller.GetProducts().ToList();
+        var history = new ProductPriceHistoryDto { Id = 1, Name = "Product A" };
 
-        Assert.That(result, Has.All.Matches<WeatherForecast>(f => f.Summary != null));
+        _productRepository.GetProductHistory(1).Returns(history);
+
+        var result = _controller.GetProductHistoryById(1);
+
+        Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+    }
+
+    [Test]
+    public void GetProductHistoryById_ReturnsNotFound_WhenProductDoesNotExist()
+    {
+        _productRepository.GetProductHistory(99).ReturnsNull();
+
+        var result = _controller.GetProductHistoryById(99);
+
+        Assert.That(result.Result, Is.InstanceOf<NotFoundResult>());
     }
 }

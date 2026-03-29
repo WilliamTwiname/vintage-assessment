@@ -1,6 +1,6 @@
 namespace ProductPricingAPI.DTOs
 {
-    public class ApplyDiscountResultDto
+    public class ApplyProductDiscountResultDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }

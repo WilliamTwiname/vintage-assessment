@@ -1,41 +1,50 @@
 using Microsoft.AspNetCore.Mvc;
 using ProductPricingAPI.DTOs;
+using ProductPricingAPI.Repositories;
 
 namespace ProductPricingAPI.Controllers
 {
     [ApiController]
     [Route("api/products")]
-    public class ProductPricingController : ControllerBase
+    public class ProductPricingController(IProductRepository productRepository) : ControllerBase
     {
-        private readonly ILogger<ProductPricingController> _logger;
-
-        public ProductPricingController(ILogger<ProductPricingController> logger)
-        {
-            _logger = logger;
-        }
-
         [HttpGet]
-        public IEnumerable<ProductDto> GetProducts()
+        public ActionResult<IEnumerable<ProductDto>> GetProducts()
         {
-            return new List<ProductDto>();
+            return Ok(productRepository.GetProducts());
         }
 
         [HttpGet("{id:int}")]
-        public IEnumerable<ProductHistoryDto> GetProductHistoryById(int id)
+        public ActionResult<ProductPriceHistoryDto> GetProductHistoryById(int id)
         {
-            return new List<ProductHistoryDto>();
+            var result = productRepository.GetProductHistory(id);
+
+            if (result is null)
+                return NotFound("Product not found in the product catalog");
+
+            return Ok(result);
         }
 
         [HttpPost("{id:int}/apply-discount")]
-        public ApplyDiscountResultDto ApplyDiscountById(int id, [FromBody] ApplyDiscountRequestDto discountRequest)
+        public ActionResult<ApplyProductDiscountResultDto> ApplyDiscountById(int id, [FromBody] ApplyProductDiscountRequestDto discountRequest)
         {
-            return new ApplyDiscountResultDto();
+            var result = productRepository.ApplyProductDiscount(id, discountRequest);
+
+            if (result is null)
+                return NotFound("Product not found in the product catalog");
+
+            return Ok(result);
         }
 
         [HttpPut("{id:int}/update-price")]
-        public UpdatePriceResultDto UpdatePriceById(int id, [FromBody] UpdatePriceRequestDto updatePriceRequest)
+        public ActionResult<UpdatePriceResultDto> UpdatePriceById(int id, [FromBody] UpdatePriceRequestDto updatePriceRequest)
         {
-            return new UpdatePriceResultDto();
+            var result = productRepository.UpdateProductPrice(id, updatePriceRequest);
+
+            if (result is null)
+                return NotFound("Product not found in the product catalog");
+
+            return Ok(result);
         }
     }
 }
