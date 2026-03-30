@@ -1,0 +1,10 @@
+@using ProductPricingUI.Models
+
+<RadzenDataGrid Data="@History" TItem="ProductPriceHistoryRecordDto">
+    <Columns>
+        <RadzenDataGridColumn TItem="ProductPriceHistoryRecordDto" Property="Price" Title="Price" FormatString="{0:C}" />
+        <RadzenDataGridColumn TItem="ProductPriceHistoryRecordDto" Property="Date" Title="Date" />
+    </Columns>
+</RadzenDataGrid>
+
+

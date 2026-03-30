@@ -1,0 +1,30 @@
+@using ProductPricingUI.Models
+
+<RadzenDataGrid Data="@Products" TItem="ProductDto">
+    <Columns>
+        <RadzenDataGridColumn TItem="ProductDto" Property="Id" Title="Id" Visible="false" />
+        <RadzenDataGridColumn TItem="ProductDto" Property="Name" Title="Name" />
+        <RadzenDataGridColumn TItem="ProductDto" Property="Price" Title="Price" FormatString="{0:C}" />
+        <RadzenDataGridColumn TItem="ProductDto" Property="LastUpdated" Title="Last Updated" FormatString="{0:dd/MM/yyyy HH:mm}" />
+
+        <RadzenDataGridColumn TItem="ProductDto" Title="Apply Discounts">
+            <Template Context="product">
+                <RadzenNumeric TValue="decimal" @bind-Value="product.DiscountPercentage" Min="0" Max="100" Style="width: 100px" />
+                <RadzenButton Text="Apply" Click="@(() => ApplyDiscountAsync(product.Id, product.DiscountPercentage))" Style="width: 100px" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductDto" Title="Update Prices">
+            <Template Context="product">
+                <RadzenNumeric TValue="decimal" @bind-Value="product.NewPrice" Min="0" Style="width: 100px" />
+                <RadzenButton Text="Update" Click="@(() => UpdatePriceAsync(product.Id, product.NewPrice))" Style="width: 100px" />
+            </Template>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ProductDto" Title="Price History">
+            <Template Context="product">
+                <RadzenButton Text="View History" Click="@(() => ViewHistoryAsync(product.Id))" />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
