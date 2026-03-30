@@ -9,6 +9,15 @@ builder.Services.AddOpenApi();
 builder.Services.AddSingleton<IProductDataRepository, ProductDataRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
+// This is added, so we can allow the Blazor web app to call the API and restrict it to that web app only (allowed origins in appsettings.json).
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("BlazorClient", policy =>
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
 var app = builder.Build();
 
 // This is added, so we can handle and display exceptions in a friendly way when the API is called - (there may be a better way to do this)
@@ -39,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("BlazorClient");
 app.UseAuthorization();
 app.MapControllers();
 
