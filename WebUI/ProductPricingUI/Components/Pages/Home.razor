@@ -1,34 +1,44 @@
 @page "/"
+@using ProductPricingUI.Models
 
 <PageTitle>Product Pricing</PageTitle>
 
 @if (isLoading)
 {
-    <p>Loading...</p>
+    <RadzenProgressBarCircular Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" AriaLabel="Loading progress" />
 }
 else if (products is not null)
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Last Updated</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in products)
-            {
-                <tr>
-                    <td>@product.Id</td>
-                    <td>@product.Name</td>
-                    <td>@product.Price.ToString("C")</td>
-                    <td>@product.LastUpdated.ToString("dd/MM/yyyy HH:mm")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <RadzenDataGrid Data="@products" TItem="ProductDto">
+        <Columns>
+            <RadzenDataGridColumn TItem="ProductDto" Property="Id" Title="Id" Visible="false" />
+            <RadzenDataGridColumn TItem="ProductDto" Property="Name" Title="Name" />
+            <RadzenDataGridColumn TItem="ProductDto" Property="Price" Title="Price" FormatString="{0:C}" />
+            <RadzenDataGridColumn TItem="ProductDto" Property="LastUpdated" Title="Last Updated" FormatString="{0:dd/MM/yyyy HH:mm}" />
+
+            <RadzenDataGridColumn TItem="ProductDto" Title="Apply Discounts">
+                <Template Context="product">
+                    <RadzenNumeric TValue="decimal" @bind-Value="product.DiscountPercentage" Min="0" Max="100" Style="width: 100px" />
+                    <RadzenButton Text="Apply" Click="@(() => ApplyDiscountAsync(product.Id, product.DiscountPercentage))" Style="width: 100px" />
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="ProductDto" Title="Update Prices">
+                <Template Context="product">
+                    <RadzenNumeric TValue="decimal" @bind-Value="product.NewPrice" Min="0" Style="width: 100px" />
+                    <RadzenButton Text="Update" Click="@(() => UpdatePriceAsync(product.Id, product.NewPrice))" Style="width: 100px" />
+                </Template>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="ProductDto" Title="Price History"
+                
+            >
+                <Template Context="product">
+                    <RadzenButton Text="View History" Click="@(() => ViewHistoryAsync(product.Id))" />
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
 }
 else if (errorMessage is not null)
 {

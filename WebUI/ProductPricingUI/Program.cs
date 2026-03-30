@@ -1,4 +1,5 @@
 using ProductPricingUI.Components;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddScoped(sp => new HttpClient
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 
