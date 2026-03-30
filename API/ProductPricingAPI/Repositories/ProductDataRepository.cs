@@ -33,7 +33,7 @@ namespace ProductPricingAPI.Repositories
                 var productPricingHistoryResult = JsonSerializer.Deserialize<List<ProductPriceHistory>>(productPricingHistoryData, jsonOptions) ?? [];
                 var productPricingHistory = productPricingHistoryResult.ToDictionary(h => h.Id);
 
-                // Here, I am populating the _products collection
+                // Here, I am populating the _products collection but also constructing the price history with it.
                 foreach (var product in productsResult)
                 {
                     if (productPricingHistory.TryGetValue(product.Id, out var history))
@@ -55,7 +55,7 @@ namespace ProductPricingAPI.Repositories
         {
             // Since we are manipulating the product data in memory, I created the UpdateProductPrice method in the ProductDataRepository to handle the logic of updating the price and the price history of a product.
             // This way, we can keep the logic of manipulating the data in one place, and the ProductRepository can focus on handling the business logic and mapping the data to the DTOs.
-            // In a real-world scenario, I would split this out into seperate repositories if it was to update the JSON or database.
+            // In a real-world scenario, I would split this out into seperate repositories if it was to update the JSON or the database.
 
             var product = GetAllProducts().FirstOrDefault(p => p.Id == productId);
             if (product is null)
